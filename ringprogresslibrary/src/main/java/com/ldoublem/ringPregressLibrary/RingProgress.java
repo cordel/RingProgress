@@ -226,15 +226,20 @@ public class RingProgress extends View {
                 paint.setStrokeJoin(Paint.Join.ROUND);
             }
 
-            int red = (bgColor & 0xff0000) >> 16;
-            int green = (bgColor & 0x00ff00) >> 8;
-            int blue = (bgColor & 0x0000ff);
-            int colorvaluer = red + (255 - red) / mListRing.size() * i;
-            int colorvalueg = green + (255 - green) / mListRing.size() * i;
-            int colorvalueb = blue + (255 - blue) / mListRing.size() * i;
+            int ringBackgroundColor = mListRing.get(i).getBackgroundColor();
 
-            paint.setColor(Color.rgb(colorvaluer, colorvalueg, colorvalueb));
+            if (ringBackgroundColor == 0) {
+                int red = (bgColor & 0xff0000) >> 16;
+                int green = (bgColor & 0x00ff00) >> 8;
+                int blue = (bgColor & 0x0000ff);
+                int colorvaluer = red + (255 - red) / mListRing.size() * i;
+                int colorvalueg = green + (255 - green) / mListRing.size() * i;
+                int colorvalueb = blue + (255 - blue) / mListRing.size() * i;
 
+                paint.setColor(Color.rgb(colorvaluer, colorvalueg, colorvalueb));
+            } else {
+                paint.setColor(ringBackgroundColor);
+            }
 
             Path pathBg = new Path();
             RectF r = new RectF();
@@ -281,8 +286,7 @@ public class RingProgress extends View {
 
     private void drawBg(Canvas canvas, Paint paint) {
         paint.setAntiAlias(true);
-        canvas.drawBitmap(getmBitmapBg(paint), 0
-                , 0, paint);
+        canvas.drawBitmap(getmBitmapBg(paint), 0, 0, paint);
     }
 
 

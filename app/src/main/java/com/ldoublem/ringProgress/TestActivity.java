@@ -3,8 +3,6 @@ package com.ldoublem.ringProgress;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
@@ -12,7 +10,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Toast;
-
 
 import com.ldoublem.ringPregressLibrary.OnSelectRing;
 import com.ldoublem.ringPregressLibrary.Ring;
@@ -166,8 +163,8 @@ public class TestActivity extends AppCompatActivity {
             if (i == 0) {
 
                 r.setStartColor(Color.rgb(235, 79, 56));
-                r.setEndColor(Color.argb(100, 235, 79, 56));
-
+                r.setEndColor(Color.rgb(235, 79, 56));
+                r.setBackgroundColor(Color.argb(50, 235, 79, 56));
 
             }
             if (i == 1) {

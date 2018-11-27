@@ -15,6 +15,7 @@ public class Ring {
     private RectF rectFRing;
     private int startColor;
     private int endColor;
+    private int backgroundColor;
 
 
     public Ring(int p,  String value, String name,int startColor, int endColor) {
@@ -77,5 +78,13 @@ public class Ring {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public int getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(int backgroundColor) {
+        this.backgroundColor = backgroundColor;
     }
 }

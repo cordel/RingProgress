@@ -15,6 +15,7 @@
         app:rotate="270"
         app:showBackground="true"
         app:showBackgroundShadow="true"
+        app:ringMargin="10dp"
         app:showRingCorner="true"
         app:ringSweepAngle="200"
         ></com.ldoublem.ringPregressLibrary.RingProgress>

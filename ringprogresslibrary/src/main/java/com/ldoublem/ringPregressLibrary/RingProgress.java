@@ -49,6 +49,41 @@ public class RingProgress extends View {
     private boolean isDrawBgShadow = true;
     private float ringWidthScale = 0f;
     private boolean bgChange = false;
+    private int ringMargin = 0;
+
+    public RingProgress(Context context) {
+        this(context, null);
+    }
+
+    public RingProgress(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public RingProgress(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init(attrs);
+    }
+
+
+    private void init(AttributeSet attrs) {
+        TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.RingProgress);
+        if (typedArray != null) {
+            isCorner = typedArray.getBoolean(R.styleable.RingProgress_showRingCorner, false);
+            isDrawBg = typedArray.getBoolean(R.styleable.RingProgress_showBackground, false);
+            isDrawBgShadow = typedArray.getBoolean(R.styleable.RingProgress_showBackgroundShadow, false);
+            rotateAngle = typedArray.getInt(R.styleable.RingProgress_rotate, 270);
+            ringWidthScale = typedArray.getFloat(R.styleable.RingProgress_ringWidthScale, 0.5f);
+            bgShadowColor = typedArray.getColor(R.styleable.RingProgress_bgShadowColor, bgShadowColor);
+            bgColor = typedArray.getColor(R.styleable.RingProgress_bgColor, bgColor);
+            SweepAngle = typedArray.getInt(R.styleable.RingProgress_ringSweepAngle, 180);
+            ringMargin = typedArray.getDimensionPixelSize(R.styleable.RingProgress_ringMargin, 0);
+            typedArray.recycle();
+        }
+
+
+        initPaint();
+    }
+
 
     public int getSweepAngle() {
         return SweepAngle;
@@ -134,7 +169,6 @@ public class RingProgress extends View {
         this.mListRing = mListRing;
     }
 
-
     public float getRingWidthScale() {
         return ringWidthScale;
     }
@@ -146,60 +180,15 @@ public class RingProgress extends View {
     }
 
 
-    public void setData(List<Ring> mListRing, int time) {
-        this.mListRing.clear();
-        for (int i = 0; i < mListRing.size(); i++) {
+    public void setData(List<Ring> listRing, int time) {
+        mListRing.clear();
+        mListRing.addAll(listRing);
 
-            RectF r = new RectF();
-            r.top = rectFBg.top + ringWidth * i;
-            r.bottom = rectFBg.bottom - ringWidth * i;
-            r.left = rectFBg.left + ringWidth * i;
-            r.right = rectFBg.right - ringWidth * i;
-            mListRing.get(i).setRectFRing(r);
-        }
-
-        for (int i = 0; i < mListRing.size(); i++) {
-            this.mListRing.add(mListRing.get(i));
-        }
         if (time > 0)
             startAnim(time);
         else
             invalidate();
     }
-
-
-    public RingProgress(Context context) {
-        this(context, null);
-    }
-
-    public RingProgress(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
-
-    public RingProgress(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(attrs);
-    }
-
-
-    private void init(AttributeSet attrs) {
-        TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.RingProgress);
-        if (typedArray != null) {
-            isCorner = typedArray.getBoolean(R.styleable.RingProgress_showRingCorner, false);
-            isDrawBg = typedArray.getBoolean(R.styleable.RingProgress_showBackground, false);
-            isDrawBgShadow = typedArray.getBoolean(R.styleable.RingProgress_showBackgroundShadow, false);
-            rotateAngle = typedArray.getInt(R.styleable.RingProgress_rotate, 270);
-            ringWidthScale = typedArray.getFloat(R.styleable.RingProgress_ringWidthScale, 0.5f);
-            bgShadowColor = typedArray.getColor(R.styleable.RingProgress_bgShadowColor, bgShadowColor);
-            bgColor = typedArray.getColor(R.styleable.RingProgress_bgColor, bgColor);
-            SweepAngle = typedArray.getInt(R.styleable.RingProgress_ringSweepAngle, 180);
-            typedArray.recycle();
-        }
-
-
-        initPaint();
-    }
-
 
     private void initPaint() {
         mPaint = new Paint();
@@ -242,14 +231,7 @@ public class RingProgress extends View {
             }
 
             Path pathBg = new Path();
-            RectF r = new RectF();
-            r.top = rectFBg.top + ringWidth * i;
-            r.bottom = rectFBg.bottom - ringWidth * i;
-            r.left = rectFBg.left + ringWidth * i;
-            r.right = rectFBg.right - ringWidth * i;
-            mListRing.get(i).setRectFRing(r);
-
-            pathBg.addArc(r, 0, SweepAngle);
+            pathBg.addArc(mListRing.get(i).getRectFRing(), 0, SweepAngle);
 
             if (i == 0 && isDrawBgShadow) {
                 paint.setShadowLayer(ringWidth / 3,
@@ -289,6 +271,17 @@ public class RingProgress extends View {
         canvas.drawBitmap(getmBitmapBg(paint), 0, 0, paint);
     }
 
+    private void setRingMargins() {
+        int ringWidthWithMargin = ringWidth + ringMargin;
+        for(int i = 0; i < mListRing.size(); i++) {
+            RectF r = new RectF();
+            r.top = rectFBg.top + ringWidthWithMargin * i;
+            r.bottom = rectFBg.bottom - ringWidthWithMargin * i;
+            r.left = rectFBg.left + ringWidthWithMargin * i;
+            r.right = rectFBg.right - ringWidthWithMargin * i;
+            mListRing.get(i).setRectFRing(r);
+        }
+    }
 
     private void drawProgress(Canvas canvas, Paint paint) {
 
@@ -437,12 +430,12 @@ public class RingProgress extends View {
                 , getMeasuredWidth() / 2 + mWidth / 2 - mPadding
                 , getMeasuredHeight() / 2 + mWidth / 2 - mPadding);
 
+        setRingMargins();
         drawBg(canvas, mPaint);
         drawProgress(canvas, mPaint);
         canvas.restore();
 
     }
-
 
 
     @Override
@@ -469,7 +462,7 @@ public class RingProgress extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        if (w >h)
+        if (w > h)
             mWidth = h;
         else
             mWidth = w;

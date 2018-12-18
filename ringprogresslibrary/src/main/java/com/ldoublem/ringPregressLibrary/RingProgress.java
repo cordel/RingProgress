@@ -179,6 +179,9 @@ public class RingProgress extends View {
         invalidate();
     }
 
+    public ArrayList getData() {
+        return new ArrayList<>(mListRing);
+    }
 
     public void setData(List<Ring> listRing, int time) {
         mListRing.clear();
